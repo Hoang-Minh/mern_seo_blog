@@ -79,7 +79,7 @@ const Category = () => {
       name: event.target.value,
       error: false,
       success: false,
-      remove: "",
+      removed: false,
       reload: false,
     });
   };
@@ -140,17 +140,13 @@ const Category = () => {
     </form>
   );
 
-  const mouseMoveHandler = (event) => {
-    setValues({ ...values, error: false, success: false, removed: false });
-  };
-
   return (
     <React.Fragment>
       {showSuccess()}
       {showError()}
       {showRemoved()}
 
-      <div onMouseMove={mouseMoveHandler}>
+      <div>
         {newCategoryForm()}
         {showCategories()}
       </div>
