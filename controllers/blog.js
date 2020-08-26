@@ -42,6 +42,7 @@ exports.create = (req, res) => {
     const blog = new Blog({
       title,
       body,
+      excerpt: `${body.substring(0, 320)}....`,
       slug: slugify(title).toLowerCase(),
       mtitle: `${title} | ${keys.APP_NAME}`,
       mdesc: stringStripHtml(body.substring(0, 160)).result,
