@@ -36,6 +36,9 @@ const Header = () => {
             <Link href="/signin" passHref>
               <NavLink>Signin</NavLink>
             </Link>
+            <Link href="/blog" passHref>
+              <NavLink>Blogs</NavLink>
+            </Link>
           </Nav>
         </React.Fragment>
       );

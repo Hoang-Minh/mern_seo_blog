@@ -15,3 +15,16 @@ export const create = (blog, token) => {
     })
     .catch((error) => console.log(error));
 };
+
+export const listBlogsWithCategoriesAndTags = (token) => {
+  return fetch(`${API}/api/blogs-categories-tags`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((error) => console.log(error));
+};
