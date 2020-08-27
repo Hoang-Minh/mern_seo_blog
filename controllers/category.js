@@ -27,10 +27,14 @@ exports.read = async (req, res) => {
   return res.json(req.slugCategory);
 };
 
-exports.remove = async (req, res, next) => {
-  const slug = req.slugCategory;
-  await Category.deleteOne(slug);
-  res.json({ message: "Category removed" });
+exports.remove = async (req, res) => {
+  try {
+    const slug = req.slugCategory;
+    await Category.deleteOne(slug);
+    res.json({ message: "Category removed" });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.findCategorySlug = async (req, res, next, slug) => {

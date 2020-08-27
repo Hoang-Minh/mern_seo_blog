@@ -8,6 +8,26 @@ const _ = require("lodash");
 const keys = require("../config/keys");
 const fs = require("fs");
 
+exports.findBlogBySlug = async (req, res, next, slug) => {
+  try {
+    const blog = await Blog.findOne({ slug: slug.toLowerCase() })
+      .populate("categories", "_id slug name")
+      .populate("tags", "_id slug name")
+      .populate("postedBy", "_id username name")
+      .select("_id title slug body mtitle mdesc postedBy createdAt updatedAt");
+    if (!blog) {
+      res.status(400);
+      next({ error: "Blog not found" });
+    } else {
+      req.slugBlog = blog;
+      next();
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 exports.create = (req, res) => {
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -53,29 +73,16 @@ exports.create = (req, res) => {
           .status(400)
           .json({ error: "Image should be less thatn 1Mb in size" });
       }
-    }
 
-    blog.photo.data = fs.readFileSync(files.photo.path);
-    blog.photo.contentType = files.photo.type;
+      blog.photo.data = fs.readFileSync(files.photo.path);
+      blog.photo.contentType = files.photo.type;
+    }
 
     blog.save((error, result) => {
       if (error) {
         console.log(error);
         res.status(400).json({ error: "Check db error" });
       }
-
-      // // res.json(result);
-      // Blog.findByIdAndUpdate(
-      //   result._id,
-      //   {
-      //     $push: { categories: arrayOfCategories, tags: arrayOfTags },
-      //   },
-      //   { new: true }
-      // ).exec((error, result) => {
-      //   if (error) return res.status(400).json({ error: "check db error" });
-
-      //   res.json(result);
-      // });
 
       res.json(result);
     });
@@ -99,8 +106,93 @@ exports.list = async (req, res) => {
   }
 };
 
-exports.listAllBlogsCategoriesTags = (req, res) => {};
+exports.listAllBlogsCategoriesTags = async (req, res) => {
+  try {
+    const limit = req.body.limit ? parseInt(req.body.limit) : 10;
+    const skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
-exports.read = (req, res) => {};
-exports.update = (req, res) => {};
-exports.remove = (req, res) => {};
+    const blogs = await Blog.find({})
+      .populate("categories", "_id name slug")
+      .populate("tags", "_id name slug")
+      .populate("postedBy", "_id name username")
+      .sort({ createdAt: -1 }) // asc based on createdAt
+      .skip(skip)
+      .limit(limit)
+      .select(
+        "_id title slug excerpt categories tags postedBy createdAt updatedAt"
+      );
+
+    const categories = await Category.find({});
+    const tags = await Tag.find({});
+
+    res.json({ blogs, categories, tags, size: blogs.length });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Check db error" });
+  }
+};
+
+exports.read = (req, res) => {
+  return res.json(req.slugBlog);
+};
+
+exports.update = async (req, res) => {
+  let oldBlog = req.slugBlog;
+
+  const form = new formidable.IncomingForm();
+  form.keepExtensions = true;
+  form.parse(req, (error, fields, files) => {
+    if (error) {
+      return res.status(400).json({ error: "Image could not upload" });
+    }
+
+    let slugBeforeMerge = oldBlog.slug;
+    oldBlog = _.merge(oldBlog, fields);
+    oldBlog.slug = slugBeforeMerge;
+
+    const { body, desc, categories, tags } = fields;
+
+    if (body) {
+      oldBlog.excerpt = body.substring(0, 320);
+      oldBlog.mdesc = stringStripHtml(body.substring(0, 160)).result;
+    }
+
+    if (categories) {
+      oldBlog.categories = categories.replace(/\s/, "").split(",");
+    }
+
+    if (tags) {
+      oldBlog.tags = tags.replace(/\s/, "").split(",");
+    }
+
+    if (files.photo) {
+      if (files.photo.size > 10000000) {
+        return res
+          .status(400)
+          .json({ error: "Image should be less thatn 1Mb in size" });
+      }
+
+      oldBlog.photo.data = fs.readFileSync(files.photo.path);
+      oldBlog.photo.contentType = files.photo.type;
+    }
+
+    oldBlog.save((error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(400).json({ error: "Check db error" });
+      }
+
+      res.json(result);
+    });
+  });
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const blog = req.slugBlog;
+    await Blog.deleteOne(blog);
+    res.json({ message: "Blog removed" });
+  } catch (error) {
+    console.log(error);
+  }
+};

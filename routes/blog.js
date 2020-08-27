@@ -12,6 +12,7 @@ const {
   read,
   remove,
   update,
+  findBlogBySlug,
 } = require("../controllers/blog");
 
 router.post("/blog", requireSignin, adminMiddleware, create);
@@ -20,5 +21,7 @@ router.post("/blogs-categories-tags", listAllBlogsCategoriesTags);
 router.get("/blog/:slug", read);
 router.delete("/blog/:slug", requireSignin, adminMiddleware, remove);
 router.put("/blog/:slug", requireSignin, adminMiddleware, update);
+
+router.param("slug", findBlogBySlug);
 
 module.exports = router;
