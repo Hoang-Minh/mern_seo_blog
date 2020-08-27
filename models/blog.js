@@ -31,9 +31,9 @@ const blogSchema = new Schema(
       contentType: String,
     },
     categories: [
-      { type: Schema.Types.ObjectId, ref: "Category", required: true },
+      { type: Schema.Types.ObjectId, ref: "category", required: true },
     ],
-    tags: [{ type: Schema.Types.ObjectId, ref: "Tag", required: true }],
+    tags: [{ type: Schema.Types.ObjectId, ref: "tag", required: true }],
     postedBy: {
       type: Schema.Types.ObjectId,
       ref: "user",

@@ -8,10 +8,6 @@ const _ = require("lodash");
 const keys = require("../config/keys");
 const fs = require("fs");
 
-exports.test = (req, res) => {
-  res.send({ hi: "there" });
-};
-
 exports.create = (req, res) => {
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -85,3 +81,26 @@ exports.create = (req, res) => {
     });
   });
 };
+
+exports.list = async (req, res) => {
+  try {
+    const blogs = await Blog.find({})
+      .populate("categories", "_id name slug")
+      .populate("tags", "_id name slug")
+      .populate("postedBy", "_id name username")
+      .select(
+        "_id title slug excerpt categories tags postedBy createdAt updatedAt"
+      );
+
+    res.json(blogs);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Check db error" });
+  }
+};
+
+exports.listAllBlogsCategoriesTags = (req, res) => {};
+
+exports.read = (req, res) => {};
+exports.update = (req, res) => {};
+exports.remove = (req, res) => {};
