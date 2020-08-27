@@ -14,7 +14,9 @@ exports.findBlogBySlug = async (req, res, next, slug) => {
       .populate("categories", "_id slug name")
       .populate("tags", "_id slug name")
       .populate("postedBy", "_id username name")
-      .select("_id title slug body mtitle mdesc postedBy createdAt updatedAt");
+      .select(
+        "_id title slug body photo mtitle mdesc postedBy createdAt updatedAt"
+      );
     if (!blog) {
       res.status(400);
       next({ error: "Blog not found" });
@@ -195,4 +197,14 @@ exports.remove = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+exports.photo = async (req, res) => {
+  const blog = req.slugBlog;
+
+  console.log(blog);
+  const photo = blog.photo;
+
+  res.set("Content-Type", photo.contentType);
+  res.send(photo.data);
 };
