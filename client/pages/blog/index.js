@@ -5,50 +5,22 @@ import moment from "moment";
 import Layout from "../../components/Layout";
 import { useState } from "react";
 import { listBlogsWithCategoriesAndTags } from "../../actions/blog";
+import Card from "../../components/blog/Card";
 
 const Blogs = ({ blogs, categories, tags, size }) => {
   const showAllBlogs = () => {
     return blogs.map((blog, index) => (
       <article key={index}>
-        <div className="lead pb-4">
-          <header>
-            <Link href={`/blogs/${blog.slug}`}>
-              <a>
-                <h2 className="pt-3 pb-3 font-weight-bold">{blog.title}</h2>
-              </a>
-            </Link>
-          </header>
-          <section>
-            <p className="mark ml-1 pt-2 pb-2">
-              Written by {blog.postedBy.name} | Published{" "}
-              {moment(blog.updatedAt).fromNow()}
-            </p>
-          </section>
-          <section>
-            <p>Blog categories and tags</p>
-          </section>
-          <div className="row">
-            <div className="col-md-4">image</div>
-            <div className="col-md-8">
-              <section>
-                <div className="pb-3">
-                  {blog.excerpt === undefined ? "" : renderHTML(blog.excerpt)}
-                </div>
-                <Link href={`/blogs/${blog.slug}`}>
-                  <a className="btn btn-primary pt-2">Read more</a>
-                </Link>
-              </section>
-            </div>
-          </div>
-        </div>
+        <Card blog={blog}></Card>
         <hr />
       </article>
     ));
   };
+
   return (
     <Layout>
       <main>
-        <div class="container-fluid">
+        <div className="container-fluid">
           <header>
             <div className="col-md-12 pt-3">
               <h1 className="display-4 font-weight-bold text-center">
