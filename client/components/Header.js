@@ -48,20 +48,21 @@ const Header = () => {
           <React.Fragment>
             <Nav className="mr-auto" navbar>
               <NavItem>
-                <NavLink onClick={() => signout(() => Router.push("/signin"))}>
-                  Sign Out
-                </NavLink>
+                <Link href="/signin" passHref>
+                  <NavLink
+                    onClick={() => signout(() => console.log("sign out"))}
+                  >
+                    Sign Out
+                  </NavLink>
+                </Link>
               </NavItem>
+              <Link href="/blog" passHref>
+                <NavLink>Blogs</NavLink>
+              </Link>
               <NavItem>
-                <NavLink
-                  onClick={() =>
-                    isAuth().role === 1
-                      ? Router.push("/admin")
-                      : Router.push("/user")
-                  }
-                >
-                  Dashboard
-                </NavLink>
+                <Link href={isAuth().role === 1 ? "/admin" : "/user"} passHref>
+                  <NavLink>Dashboard</NavLink>
+                </Link>
               </NavItem>
             </Nav>
           </React.Fragment>

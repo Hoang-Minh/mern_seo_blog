@@ -8,13 +8,8 @@ import { getCategories } from "../../actions/category";
 import { getTags } from "../../actions/tag";
 import { create } from "../../actions/blog";
 import { quillModules, quillFormats } from "../../helpers/quill";
-// import ReactQuill from 'react-quill';
-// import 'react-quill/dist/quill.snow.css';
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "../../node_modules/react-quill/dist/quill.snow.css";
-import { check } from "express-validator";
-import { token } from "morgan";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const BlogCreate = ({ router }) => {
   const blogFromLocalStorate = () => {
@@ -33,10 +28,10 @@ const BlogCreate = ({ router }) => {
     hidePublishButon: false,
   });
 
-  const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [checked, setChecked] = useState([]); // category
-  const [checkedTag, setCheckedTag] = useState([]); // tag
+  const [categories, setCategories] = useState([]); // load all categories options
+  const [tags, setTags] = useState([]); // load all tags options
+  const [checked, setChecked] = useState([]); // set category
+  const [checkedTag, setCheckedTag] = useState([]); // set tag
 
   const {
     error,
@@ -50,6 +45,7 @@ const BlogCreate = ({ router }) => {
   const token = getCookie("token");
 
   useEffect(() => {
+    console.log("use effect");
     setValues({ ...values, formData: new FormData() });
     initCategories();
     initTags();
@@ -69,8 +65,10 @@ const BlogCreate = ({ router }) => {
           success: `A new blog title ${data.title} is created`,
         });
         setBody({});
-        setCategories([]);
-        setTags([]);
+        // setCategories([]);
+        // setTags([]);
+        setChecked([]);
+        setCheckedTag([]);
       }
     });
   };
@@ -116,31 +114,55 @@ const BlogCreate = ({ router }) => {
   };
 
   const handleToggle = (id) => (event) => {
+    console.log(event.target.checked);
     setValues({ ...values, error: "" });
+
     const clickedCategory = checked.indexOf(id);
     const all = [...checked];
-    if (clickedCategory === -1) {
+
+    if (event.target.checked && clickedCategory === -1) {
       all.push(id);
-    } else {
+    } else if (!event.target.checked && clickedCategory !== -1) {
       all.splice(clickedCategory, 1);
     }
     console.log(all);
     setChecked(all);
     formData.set("categories", all);
+
+    // const clickedCategory = checked.indexOf(id);
+    // const all = [...checked];
+    // if (clickedCategory === -1) {
+    //   all.push(id);
+    // } else {
+    //   all.splice(clickedCategory, 1);
+    // }
+    // console.log(all);
+    // setChecked(all);
+    // formData.set("categories", all);
   };
 
   const handleToggleTag = (id) => (event) => {
     setValues({ ...values, error: "" });
     const clickedTag = checkedTag.indexOf(id);
     const all = [...checkedTag];
-    if (clickedTag === -1) {
+
+    if (event.target.checked && clickedTag === -1) {
       all.push(id);
-    } else {
+    } else if (!event.target.checked && clickedTag !== -1) {
       all.splice(clickedTag, 1);
     }
     console.log(all);
     setCheckedTag(all);
     formData.set("tags", all);
+
+    // if (clickedTag === -1) {
+    //   all.push(id);
+    // } else {
+    //   all.splice(clickedTag, 1);
+    // }
+    // console.log(all);
+    // setCheckedTag(all);
+    // formData.set("tags", all);
   };
 
   const showCategories = () => {

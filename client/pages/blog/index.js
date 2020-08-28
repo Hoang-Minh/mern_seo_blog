@@ -17,6 +17,22 @@ const Blogs = ({ blogs, categories, tags, size }) => {
     ));
   };
 
+  const showAllCategories = () => {
+    return categories.map((category, index) => (
+      <Link key={index} href={`/categories/${category.slug}`}>
+        <a className="btn btn-primary mr-1 ml-1 mt-3">{category.name}</a>
+      </Link>
+    ));
+  };
+
+  const showAllTags = () => {
+    return tags.map((tag, index) => (
+      <Link key={index} href={`/categories/${tag.slug}`}>
+        <a className="btn btn-outline-primary mr-1 ml-1 mt-3">{tag.name}</a>
+      </Link>
+    ));
+  };
+
   return (
     <Layout>
       <main>
@@ -28,7 +44,11 @@ const Blogs = ({ blogs, categories, tags, size }) => {
               </h1>
             </div>
             <section>
-              <p>Show categories and tags</p>
+              <div className="pb-5 text-center">
+                {showAllCategories()}
+                <br />
+                {showAllTags()}
+              </div>
             </section>
           </header>
         </div>
@@ -49,7 +69,7 @@ Blogs.getInitialProps = () => {
     } else {
       return {
         blogs: data.blogs,
-        categories: data.categorie,
+        categories: data.categories,
         tags: data.tags,
         size: data.size,
       };

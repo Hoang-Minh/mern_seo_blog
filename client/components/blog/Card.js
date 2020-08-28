@@ -42,11 +42,20 @@ const Card = ({ blog }) => {
         {showBlogCategories(blog)}
         {showBlogTags(blog)}
       </section>
-      <div className="row">
-        <div className="col-md-4">image</div>
+      <div className="row mt-4">
+        <div className="col-md-4">
+          <section>
+            <img
+              className="img img-fluid"
+              src={`${API}/api/blog/photo/${blog.slug}`}
+              alt={blog.title}
+              style={{ maxHeight: "150px", width: "auto" }}
+            />
+          </section>
+        </div>
         <div className="col-md-8">
           <section>
-            <div className="pb-3">
+            <div>
               {blog.excerpt === undefined ? "" : renderHTML(blog.excerpt)}
             </div>
             <Link href={`/blogs/${blog.slug}`}>

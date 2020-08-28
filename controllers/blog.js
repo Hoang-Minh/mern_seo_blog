@@ -38,6 +38,7 @@ exports.create = (req, res) => {
       return res.status(400).json({ error: "Image could not upload" });
     }
 
+    // title is missing, content is too short !!! check this !!!!
     const { title, body, categories, tags } = fields;
 
     if (!title || !title.length)
@@ -201,10 +202,7 @@ exports.remove = async (req, res) => {
 
 exports.photo = async (req, res) => {
   const blog = req.slugBlog;
-
-  console.log(blog);
   const photo = blog.photo;
-
   res.set("Content-Type", photo.contentType);
   res.send(photo.data);
 };
