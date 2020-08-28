@@ -5,5 +5,8 @@ module.exports = withCSS({
     APP_NAME: "SEOBLOG",
     API_DEVELOPMENT: "http://localhost:5000/api",
     PRODUCTION: false,
+    DOMAIN_DEVELOPMENT: "http://localhost:3000",
+    DOMAN_PRODUCTION: "",
+    FB_APP_ID: "326626271786396",
   },
 });
