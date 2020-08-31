@@ -206,3 +206,22 @@ exports.photo = async (req, res) => {
   res.set("Content-Type", photo.contentType);
   res.send(photo.data);
 };
+
+exports.listRelated = async (req, res) => {
+  try {
+    const limit = req.body.limit ? parseInt(req.body.limit) : 3;
+    const { _id, categories } = req.body;
+
+    // find blogs that not including _id, but includes categories
+    const blogs = await Blog.find({
+      _id: { $ne: _id },
+      categories: { $in: categories },
+    })
+      .limit(limit)
+      .populate("postedBy", "_id name profile")
+      .select("title slug excerpt postedBy createdAt updatedAt");
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: "check db error" });
+  }
+};

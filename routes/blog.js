@@ -14,6 +14,7 @@ const {
   update,
   photo,
   findBlogBySlug,
+  listRelated,
 } = require("../controllers/blog");
 
 router.post("/blog", requireSignin, adminMiddleware, create);
@@ -23,6 +24,7 @@ router.get("/blog/:slug", read);
 router.delete("/blog/:slug", requireSignin, adminMiddleware, remove);
 router.put("/blog/:slug", requireSignin, adminMiddleware, update);
 router.get("/blog/photo/:slug", photo);
+router.post("/blogs/related", listRelated);
 
 router.param("slug", findBlogBySlug);
 
