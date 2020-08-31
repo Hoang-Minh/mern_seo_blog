@@ -7,9 +7,7 @@ const Card = ({ blog }) => {
   const showBlogCategories = (blog) => {
     return blog.categories.map((category, index) => (
       <Link key={index} href={`/categories/${category.slug}`}>
-        <a className="btn btn-outline-primary mr-1 ml-1 mt-3">
-          {category.name}
-        </a>
+        <a className="btn btn-primary mr-1 ml-1 mt-3">{category.name}</a>
       </Link>
     ));
   };
@@ -40,6 +38,8 @@ const Card = ({ blog }) => {
       <section>
         {showBlogCategories(blog)}
         {showBlogTags(blog)}
+        <br />
+        <br />
       </section>
       <div className="row mt-4">
         <div className="col-md-4">

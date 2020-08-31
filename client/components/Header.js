@@ -36,7 +36,7 @@ const Header = () => {
             <Link href="/signin" passHref>
               <NavLink>Signin</NavLink>
             </Link>
-            <Link href="/blog" passHref>
+            <Link href="/blogs" passHref>
               <NavLink>Blogs</NavLink>
             </Link>
           </Nav>
@@ -56,7 +56,7 @@ const Header = () => {
                   </NavLink>
                 </Link>
               </NavItem>
-              <Link href="/blog" passHref>
+              <Link href="/blogs" passHref>
                 <NavLink>Blogs</NavLink>
               </Link>
               <NavItem>
