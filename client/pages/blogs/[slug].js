@@ -113,7 +113,7 @@ const SingleBlog = ({ blog, query }) => {
               </section>
             </div>
 
-            <div class="container">
+            <div className="container">
               <section>
                 <div className="col-md-12 lead">{renderHTML(blog.body)}</div>
               </section>
