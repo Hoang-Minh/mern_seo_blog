@@ -220,6 +220,8 @@ exports.listRelated = async (req, res) => {
       .limit(limit)
       .populate("postedBy", "_id name profile")
       .select("title slug excerpt postedBy createdAt updatedAt");
+
+    res.json(blogs);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: "check db error" });

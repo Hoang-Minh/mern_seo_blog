@@ -4,11 +4,14 @@ import { withRouter } from "next/router";
 import renderHTML from "react-render-html";
 import moment from "moment";
 import Layout from "../../components/Layout";
-import { useState } from "react";
-import { singleBlog } from "../../actions/blog";
+import { useState, useEffect } from "react";
+import { singleBlog, listRelated } from "../../actions/blog";
 import { API, DOMAIN, APP_NAME, FB_APP_ID } from "../../config";
+import SmallCard from "../../components/blog/SmallCard";
 
 const SingleBlog = ({ blog, query }) => {
+  const [related, setRelated] = useState([]);
+
   const head = () => (
     <Head>
       <title>
@@ -34,6 +37,21 @@ const SingleBlog = ({ blog, query }) => {
     </Head>
   );
 
+  useEffect(() => {
+    loadRelated();
+  }, []);
+
+  const loadRelated = () => {
+    console.log(blog);
+    listRelated(blog).then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setRelated(data);
+      }
+    });
+  };
+
   const showBlogCategories = (blog) => {
     return blog.categories.map((category, index) => (
       <Link key={index} href={`/categories/${category.slug}`}>
@@ -50,13 +68,23 @@ const SingleBlog = ({ blog, query }) => {
     ));
   };
 
+  const showRelatedBlogs = () => {
+    return related.map((blog, index) => (
+      <div className="col-md-4" key={index}>
+        <article>
+          <SmallCard blog={blog}></SmallCard>
+        </article>
+      </div>
+    ));
+  };
+
   return (
     <React.Fragment>
       {head()}
       <Layout>
         <main>
           <article>
-            <div class="container-fluid">
+            <div className="container-fluid">
               <section>
                 <div className="row" style={{ marginTop: "-30px" }}>
                   <img
@@ -85,16 +113,17 @@ const SingleBlog = ({ blog, query }) => {
               </section>
             </div>
 
-            <div class="container-fluid">
+            <div class="container">
               <section>
                 <div className="col-md-12 lead">{renderHTML(blog.body)}</div>
               </section>
             </div>
+
             <div className="container pb-5">
               <h4 className="text-center pt-5 pb-5 h2">Related blogs</h4>
-              <hr />
-              <p>Show related blogs</p>
+              <div className="row">{showRelatedBlogs()}</div>
             </div>
+
             <div className="container pb-5">
               <p>Show comments</p>
             </div>
