@@ -85,11 +85,12 @@ export const remove = (slug, token) => {
 };
 
 export const update = (blog, token, slug) => {
+  console.log("update slug", slug);
+
   return fetch(`${API}/api/blog/${slug}`, {
     method: "PUT",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: blog,

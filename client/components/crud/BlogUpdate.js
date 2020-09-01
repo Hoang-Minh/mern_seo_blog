@@ -8,6 +8,7 @@ import { getCategories } from "../../actions/category";
 import { getTags } from "../../actions/tag";
 import { singleBlog, update } from "../../actions/blog";
 import { quillModules, quillFormats } from "../../helpers/quill";
+import { API } from "../../config";
 import "../../node_modules/react-quill/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -26,6 +27,7 @@ const BlogUpdate = ({ router }) => {
   const [checkedTag, setCheckedTag] = useState([]); // set tag
   const { slug } = router.query;
   const { error, success, formData, title } = values;
+  const token = getCookie("token");
 
   useEffect(() => {
     setValues({ ...values, formData: new FormData() });
@@ -210,8 +212,27 @@ const BlogUpdate = ({ router }) => {
     formData.set("body", event);
   };
 
-  const editBlog = () => {
-    console.log("update blog");
+  const editBlog = (event) => {
+    event.preventDefault();
+    console.log("edit blog", token, router.query.slug);
+
+    update(formData, token, router.query.slug).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          ...values,
+          title: "",
+          success: `Blog titled "${data.title}" is successfully updated`,
+        });
+
+        if (isAuth() && isAuth().role === 1) {
+          Router.replace(`/admin/crud/${router.query.slug}`);
+        } else {
+          Router.replace(`/user/crud/${router.query.slug}`);
+        }
+      }
+    });
   };
 
   const updateBlogForm = () => {
@@ -244,15 +265,40 @@ const BlogUpdate = ({ router }) => {
     );
   };
 
+  const showError = () => (
+    <div
+      className="alert alert-danger"
+      style={{ display: error ? "" : "none" }}
+    >
+      {error}
+    </div>
+  );
+
+  const showSuccess = () => (
+    <div
+      className="alert alert-success"
+      style={{ display: success ? "" : "none" }}
+    >
+      {success}
+    </div>
+  );
+
   return (
     <div className="container-fluid pb-5">
       <div className="row">
         <div className="col-md-8">
           {updateBlogForm()}
-          <div className="pt-3">show success and error msg</div>
-          {JSON.stringify(categories)}
-          <br />
-          {JSON.stringify(tags)}
+          <div className="pt-3">
+            {showError()}
+            {showSuccess()}
+          </div>
+          {body && (
+            <img
+              src={`${API}/api/blog/photo/${router.query.slug}`}
+              alt={title}
+              style={{ width: "100%" }}
+            />
+          )}
         </div>
         <div className="col-md-4">
           <div>
