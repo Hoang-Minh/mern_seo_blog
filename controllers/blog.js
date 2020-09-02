@@ -218,7 +218,7 @@ exports.listRelated = async (req, res) => {
       categories: { $in: categories },
     })
       .limit(limit)
-      .populate("postedBy", "_id name profile")
+      .populate("postedBy", "_id name username profile")
       .select("title slug excerpt postedBy createdAt updatedAt");
 
     res.json(blogs);

@@ -5,8 +5,11 @@ const {
   authMiddleware,
   adminMiddleware,
 } = require("../controllers/auth");
-const { read } = require("../controllers/user");
+const { read, publicProfile, findUser } = require("../controllers/user");
 
 router.get("/profile", requireSignin, authMiddleware, read);
+router.get("/user/:username", publicProfile);
+
+router.param("username", findUser);
 
 module.exports = router;
