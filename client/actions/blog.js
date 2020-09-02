@@ -1,3 +1,4 @@
+import queryString from "query-string";
 import { API } from "../config";
 
 export const create = (blog, token) => {
@@ -94,6 +95,19 @@ export const update = (blog, token, slug) => {
       Authorization: `Bearer ${token}`,
     },
     body: blog,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((error) => console.log(error));
+};
+
+export const listSearch = (params) => {
+  console.log("search params", params);
+  const query = queryString.stringify(params);
+  console.log("query params", query);
+  return fetch(`${API}/api/blogs/search?${query}`, {
+    method: "GET",
   })
     .then((response) => {
       return response.json();

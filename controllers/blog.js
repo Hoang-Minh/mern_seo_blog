@@ -227,3 +227,25 @@ exports.listRelated = async (req, res) => {
     res.status(400).json({ error: "check db error" });
   }
 };
+
+exports.listSearch = async (req, res, next) => {
+  try {
+    console.log(req.query);
+    const { search } = req.query;
+
+    if (search) {
+      const blogs = await Blog.find({
+        // search in either title or body with options i - case insensitive
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { body: { $regex: search, $options: "i" } },
+        ],
+      }).select("-photo -body");
+
+      res.json(blogs);
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
