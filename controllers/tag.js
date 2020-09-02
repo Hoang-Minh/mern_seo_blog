@@ -1,4 +1,5 @@
 const Tag = require("../models/tag");
+const Blog = require("../models/blog");
 const slugify = require("slugify");
 const { uniqueMessage } = require("../helpers/dbError");
 
@@ -33,8 +34,20 @@ exports.list = async (req, res, next) => {
   }
 };
 
-exports.read = (req, res) => {
-  res.json(req.tagSlug);
+exports.read = async (req, res, next) => {
+  try {
+    const blogs = await Blog.find({ tags: req.tagSlug })
+      .populate("categories", "_id name slug")
+      .populate("tags", "_id name slug")
+      .populate("postedBy", "_id name")
+      .select(
+        "_id title slug excerpt categories postedBy tags createdAt updatedAt"
+      );
+    res.json({ tag: req.tagSlug, blogs });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 };
 
 exports.remove = async (req, res) => {

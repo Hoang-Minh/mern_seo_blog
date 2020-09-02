@@ -34,7 +34,7 @@ exports.read = async (req, res, next) => {
         "_id title slug excerpt categories postedBy tags createdAt updatedAt"
       );
 
-    return res.json({ category: req.slugCategory, blogs });
+    res.json({ category: req.slugCategory, blogs });
   } catch (error) {
     next(error);
   }
