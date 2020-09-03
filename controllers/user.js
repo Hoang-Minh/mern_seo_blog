@@ -3,7 +3,7 @@ const fs = require("fs");
 const formidable = require("formidable");
 const User = require("../models/user");
 const Blog = require("../models/blog");
-const user = require("../models/user");
+const keys = require("../config/keys");
 
 exports.findUser = async (req, res, next, username) => {
   try {
@@ -24,6 +24,7 @@ exports.read = (req, res) => {
 exports.publicProfile = async (req, res, next) => {
   try {
     const userId = req.publicProfile._id;
+    console.log("public Profile", userId);
     const blogs = await Blog.find({ postedBy: userId })
       .populate("categories", "_id name slug")
       .populate("tags", "_id name slug")
@@ -50,6 +51,13 @@ exports.update = (req, res) => {
     }
 
     const user = _.extend(req.profile, fields);
+    user.profile = `${keys.CLIENT_URL}/profile/${user.username}`;
+
+    if (fields.password && fields.password.length < 6) {
+      return res
+        .status(400)
+        .json({ error: "Password should be min 6 characters long" });
+    }
 
     if (files.photo) {
       if (files.photo.size > 10000000) {
@@ -67,8 +75,8 @@ exports.update = (req, res) => {
         return res.status(400).json({ error: "check db error" });
       }
 
-      console.log("update result", result);
       result.hashed_password = undefined;
+      console.log("update result", result);
       res.json(result);
     });
   });

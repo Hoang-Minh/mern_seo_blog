@@ -4,6 +4,7 @@ import Router from "next/router";
 import { getCookie, isAuth } from "../../actions/auth";
 import { getProfile, updateProfile } from "../../actions/user";
 import { initial } from "lodash";
+import { API } from "../../config";
 
 const ProfileUpdate = () => {
   const [values, setValues] = useState({
@@ -44,6 +45,7 @@ const ProfileUpdate = () => {
           name: data.name,
           email: data.email,
           about: data.about,
+          userData: new FormData(),
         });
       }
     });
@@ -55,12 +57,10 @@ const ProfileUpdate = () => {
 
   const handleChange = (name) => (event) => {
     const value = name === "photo" ? event.target.files[0] : event.target.value;
-    let userFormData = new FormData();
-    userFormData.set(name, value);
+    userData.set(name, value);
     setValues({
       ...values,
       [name]: value,
-      userData: userFormData,
       error: false,
       success: false,
     });
@@ -157,12 +157,51 @@ const ProfileUpdate = () => {
     </form>
   );
 
+  const showError = () => (
+    <div
+      className="alert alert-danger"
+      style={{ display: error ? "" : "none" }}
+    >
+      {error}
+    </div>
+  );
+
+  const showSuccess = () => (
+    <div
+      className="alert alert-success"
+      style={{ display: success ? "" : "none" }}
+    >
+      Profile has been updated successfully
+    </div>
+  );
+
+  const showLoading = () => (
+    <div
+      className="alert alert-info"
+      style={{ display: loading ? "" : "none" }}
+    >
+      ...Loading
+    </div>
+  );
+
   return (
     <React.Fragment>
       <div className="container">
         <div className="row">
-          <div className="col-md-4">image</div>
-          <div className="col-md-8 mb-5">{profileUpdateForm()}</div>
+          <div className="col-md-4">
+            {/* <img
+              src={`${API}/api/user/photo/${username}`}
+              className="img img-fluid img-thumbnail mb-3"
+              style={{ maxHeight: "auto", maxWidth: "100%" }}
+              alt="user profile"
+            /> */}
+          </div>
+          <div className="col-md-8 mb-5">
+            {showError()}
+            {showSuccess()}
+            {showLoading()}
+            {profileUpdateForm()}
+          </div>
         </div>
       </div>
     </React.Fragment>
