@@ -42,8 +42,9 @@ exports.publicProfile = async (req, res, next) => {
 };
 
 exports.update = (req, res) => {
-  const form = new formidable.IncomingForm();
-  form.parse(req.body, (error, fields, files) => {
+  let form = new formidable.IncomingForm();
+  form.keepExtensions = true;
+  form.parse(req, (error, fields, files) => {
     if (error) {
       return res.status(400).json({ error: "Photo cannot be uploaded" });
     }
@@ -59,16 +60,17 @@ exports.update = (req, res) => {
 
       user.photo.data = fs.readFileSync(files.photo.path);
       user.photo.contentType = files.photo.type;
-
-      user.save((error, result) => {
-        if (error) {
-          return res.status(400).json({ error: "check db error" });
-        }
-      });
-
-      user.hashed_password = undefined;
-      res.json(user);
     }
+
+    user.save((error, result) => {
+      if (error) {
+        return res.status(400).json({ error: "check db error" });
+      }
+
+      console.log("update result", result);
+      result.hashed_password = undefined;
+      res.json(result);
+    });
   });
 };
 

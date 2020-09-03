@@ -139,7 +139,7 @@ exports.read = (req, res) => {
   return res.json(req.slugBlog);
 };
 
-exports.update = async (req, res) => {
+exports.update = (req, res) => {
   let oldBlog = req.slugBlog;
 
   const form = new formidable.IncomingForm();

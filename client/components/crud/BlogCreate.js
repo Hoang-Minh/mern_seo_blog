@@ -94,7 +94,6 @@ const BlogCreate = ({ router }) => {
   };
 
   const handleChange = (name) => (event) => {
-    console.log(event.target.value);
     const value = name === "photo" ? event.target.files[0] : event.target.value;
     formData.set(name, value);
     setValues({
