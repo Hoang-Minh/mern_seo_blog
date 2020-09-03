@@ -99,3 +99,12 @@ export const signout = (next) => {
     .then((response) => console.log("signout success"))
     .catch((error) => console.log(error));
 };
+
+export const updateUser = (user, next) => {
+  if (typeof window !== "undefined") {
+    if (localStorage.getItem("user")) {
+      localStorage.setItem("user", JSON.stringify(user));
+      next();
+    }
+  }
+};

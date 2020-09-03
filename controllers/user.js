@@ -78,7 +78,9 @@ exports.update = (req, res) => {
       }
 
       result.hashed_password = undefined;
-      console.log("update result", result);
+      result.salt = undefined;
+      result.photo = undefined;
+
       res.json(result);
     });
   });

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Router from "next/router";
-import { getCookie, isAuth } from "../../actions/auth";
+import { getCookie, isAuth, updateUser } from "../../actions/auth";
 import { getProfile, updateProfile } from "../../actions/user";
 import { API } from "../../config";
 
@@ -18,7 +18,6 @@ const ProfileUpdate = () => {
     photo: "",
     userData: "",
   });
-  const [reloadImage, setReloadImage] = useState(false);
 
   const token = getCookie("token");
   console.log("token", token);
@@ -80,17 +79,18 @@ const ProfileUpdate = () => {
           loading: false,
         });
       } else {
-        setValues({
-          ...values,
-          username: data.username,
-          name: data.name,
-          email: data.email,
-          about: data.about,
-          password: "",
-          success: true,
-          loading: false,
+        updateUser(data, () => {
+          setValues({
+            ...values,
+            username: data.username,
+            name: data.name,
+            email: data.email,
+            about: data.about,
+            password: "",
+            success: true,
+            loading: false,
+          });
         });
-        setReloadImage(true);
       }
     });
   };
