@@ -84,10 +84,6 @@ exports.update = (req, res) => {
 
 exports.photo = (req, res) => {
   const user = req.publicProfile;
-
-  if (user.photo.data) {
-    res.set("Content-Type", user.photo.contentType);
-  }
-
+  res.set("Content-Type", user.photo.contentType);
   res.send(user.photo.data);
 };

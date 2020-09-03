@@ -43,7 +43,7 @@ const userSchema = new Schema(
       default: 0,
     },
     photo: {
-      type: Buffer,
+      data: Buffer,
       contentType: String,
     },
     resetPasswordLink: {
