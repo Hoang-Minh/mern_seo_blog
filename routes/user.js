@@ -14,8 +14,11 @@ const {
 } = require("../controllers/user");
 
 router.get("/user/profile", requireSignin, authMiddleware, read);
+router.put("/user/profile", requireSignin, authMiddleware, update);
+// /user/update
+
 router.get("/user/:username", publicProfile);
-router.put("/user/update", requireSignin, authMiddleware, update);
+
 router.get("/user/photo/:username", photo);
 
 router.param("username", findUser);

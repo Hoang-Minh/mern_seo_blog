@@ -17,12 +17,14 @@ exports.findUser = async (req, res, next, username) => {
 };
 
 exports.read = (req, res) => {
+  console.log("user controller: READ");
   req.profile.hashed_password = undefined;
   return res.json(req.profile);
 };
 
 exports.publicProfile = async (req, res, next) => {
   try {
+    console.log("user controller: PUBLIC PROFILE");
     const userId = req.publicProfile._id;
     console.log("public Profile", userId);
     const blogs = await Blog.find({ postedBy: userId })

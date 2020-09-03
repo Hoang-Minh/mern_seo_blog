@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Router from "next/router";
 import { getCookie, isAuth } from "../../actions/auth";
 import { getProfile, updateProfile } from "../../actions/user";
-import { initial } from "lodash";
 import { API } from "../../config";
 
 const ProfileUpdate = () => {
@@ -19,8 +18,10 @@ const ProfileUpdate = () => {
     photo: "",
     userData: "",
   });
+  const [reloadImage, setReloadImage] = useState(false);
 
   const token = getCookie("token");
+  console.log("token", token);
   const {
     username,
     name,
@@ -68,6 +69,7 @@ const ProfileUpdate = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
     setValues({ ...values, loading: true });
     updateProfile(token, userData).then((data) => {
       if (data.error) {
@@ -84,9 +86,11 @@ const ProfileUpdate = () => {
           name: data.name,
           email: data.email,
           about: data.about,
+          password: "",
           success: true,
           loading: false,
         });
+        setReloadImage(true);
       }
     });
   };
