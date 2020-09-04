@@ -17,10 +17,9 @@ const ProfileUpdate = () => {
     loading: false,
     photo: "",
     userData: "",
+    imageSrc: "",
   });
 
-  const token = getCookie("token");
-  console.log("token", token);
   const {
     username,
     name,
@@ -32,9 +31,11 @@ const ProfileUpdate = () => {
     loading,
     photo,
     userData,
+    imageSrc,
   } = values;
 
   const init = () => {
+    const token = getCookie("token");
     getProfile(token).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error });
@@ -46,6 +47,7 @@ const ProfileUpdate = () => {
           email: data.email,
           about: data.about,
           userData: new FormData(),
+          imageSrc: `${API}/api/user/photo/${data.username}`,
         });
       }
     });
@@ -68,6 +70,7 @@ const ProfileUpdate = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const token = getCookie("token");
 
     setValues({ ...values, loading: true });
     updateProfile(token, userData).then((data) => {
@@ -114,7 +117,7 @@ const ProfileUpdate = () => {
           onChange={handleChange("username")}
           type="text"
           className="form-control"
-          value={username}
+          defaultValue={username}
         ></input>
       </div>
       <div className="form-group">
@@ -123,7 +126,7 @@ const ProfileUpdate = () => {
           onChange={handleChange("name")}
           type="text"
           className="form-control"
-          value={name}
+          defaultValue={name}
         ></input>
       </div>
       <div className="form-group">
@@ -132,7 +135,7 @@ const ProfileUpdate = () => {
           onChange={handleChange("email")}
           type="text"
           className="form-control"
-          value={email}
+          defaultValue={email}
         ></input>
       </div>
       <div className="form-group">
@@ -141,7 +144,7 @@ const ProfileUpdate = () => {
           onChange={handleChange("about")}
           type="text"
           className="form-control"
-          value={about}
+          defaultValue={about}
         ></textarea>
       </div>
       <div className="form-group">
@@ -150,7 +153,7 @@ const ProfileUpdate = () => {
           onChange={handleChange("password")}
           type="password"
           className="form-control"
-          value={password}
+          defaultValue={password}
         ></input>
       </div>
       <div>
@@ -194,7 +197,7 @@ const ProfileUpdate = () => {
         <div className="row">
           <div className="col-md-4">
             <img
-              src={`${API}/api/user/photo/${username}`}
+              src={imageSrc}
               className="img img-fluid img-thumbnail mb-3"
               style={{ maxHeight: "auto", maxWidth: "100%" }}
               alt="user profile"

@@ -13,13 +13,10 @@ const {
   photo,
 } = require("../controllers/user");
 
-router.get("/user/profile", requireSignin, authMiddleware, read);
+router.get("/user/profile", requireSignin, authMiddleware, read); // view in order to update
 router.put("/user/profile", requireSignin, authMiddleware, update);
-// /user/update
-
-router.get("/user/:username", publicProfile);
-
 router.get("/user/photo/:username", photo);
+router.get("/user/:username", publicProfile); // view profile - without modification
 
 router.param("username", findUser);
 
