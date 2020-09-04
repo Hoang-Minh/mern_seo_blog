@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Router from "next/router";
 import Link from "next/link";
 import NProgress from "nprogress";
@@ -23,11 +23,15 @@ Router.onRouteChangeError = (url) => NProgress.done();
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [auth, setAuth] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
+  useEffect(() => {
+    setAuth(isAuth());
+  }, []);
+
   const renderContent = () => {
-    if (!isAuth()) {
+    if (!auth) {
       return (
         <Nav className="mr-auto" navbar>
           <Link href="/signup" passHref>
@@ -44,13 +48,14 @@ const Header = () => {
     } else {
       return (
         <Nav className="mr-auto" navbar>
-          <NavItem>
-            <Link href="/signin" passHref>
-              <NavLink onClick={() => signout(() => console.log("sign out"))}>
-                Sign Out
-              </NavLink>
-            </Link>
-          </NavItem>
+          <Link href="/signin" passHref>
+            <NavLink onClick={() => signout(() => console.log("sign out"))}>
+              Sign Out
+            </NavLink>
+          </Link>
+          <Link href="/user/crud/create" passHref>
+            <NavLink>Create Blogs</NavLink>
+          </Link>
           <Link href="/blogs" passHref>
             <NavLink>Blogs</NavLink>
           </Link>

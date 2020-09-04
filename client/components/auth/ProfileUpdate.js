@@ -69,7 +69,8 @@ const ProfileUpdate = () => {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    // event.preventDefault(); // in order for image to reload - need to find a better way to reload image without reloading page
+
     const token = getCookie("token");
 
     setValues({ ...values, loading: true });
