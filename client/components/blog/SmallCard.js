@@ -13,7 +13,7 @@ const SmallCard = ({ blog }) => {
               className="img img-fluid"
               src={`${API}/api/blog/photo/${blog.slug}`}
               alt={blog.title}
-              style={{ maxHeight: "auto", width: "100%" }}
+              style={{ maxHeight: "250px", width: "100%" }}
             ></img>
           </a>
         </Link>

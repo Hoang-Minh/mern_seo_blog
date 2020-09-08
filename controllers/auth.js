@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Blog = require("../models/blog");
 const shortId = require("shortid");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
@@ -43,9 +44,11 @@ exports.signin = async (req, res) => {
 
     res.cookie("token", token, { expiresIn: "1d" });
 
-    const { _id, name, role } = user;
-    res.json({ token, user: { _id, name, email, role } });
-  } catch (error) {}
+    const { _id, name, username, role } = user;
+    res.json({ token, user: { _id, name, username, email, role } });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.requireSignin = expressJwt({
@@ -88,4 +91,22 @@ exports.signout = (req, res) => {
   res.json({ message: "Signout successfully" });
 };
 
-exports.create = (req, res) => {};
+exports.canUpdateDeleteBlog = async (req, res, next) => {
+  try {
+    const slug = req.params.slug.toLowerCase();
+    const blog = await Blog.findOne({ slug });
+
+    const authorizedUser =
+      blog.postedBy._id.toString() === req.profile._id.toString();
+
+    if (!authorizedUser) {
+      res.status(400);
+      next({ error: "You are not authorized" });
+    } else {
+      next();
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

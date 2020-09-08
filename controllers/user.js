@@ -8,8 +8,14 @@ const keys = require("../config/keys");
 exports.findUser = async (req, res, next, username) => {
   try {
     const user = await User.findOne({ username });
-    req.publicProfile = user;
-    next();
+
+    if (!user) {
+      res.status(400);
+      next({ error: "User not found" });
+    } else {
+      req.publicProfile = user;
+      next();
+    }
   } catch (error) {
     console.log(error);
     next(error);

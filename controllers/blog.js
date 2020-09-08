@@ -1,6 +1,7 @@
 const Blog = require("../models/blog");
 const Category = require("../models/category");
 const Tag = require("../models/tag");
+const User = require("../models/user");
 const formidable = require("formidable");
 const stringStripHtml = require("string-strip-html");
 const slugify = require("slugify");
@@ -22,6 +23,30 @@ exports.findBlogBySlug = async (req, res, next, slug) => {
       next({ error: "Blog not found" });
     } else {
       req.slugBlog = blog;
+      next();
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+exports.findBlogsByUser = async (req, res, next, username) => {
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      res.status(400);
+      next({ error: "User not found" });
+    } else {
+      const userId = user._id;
+      const blogs = await Blog.find({ postedBy: userId })
+        .populate("categories", "_id name slug")
+        .populate("tags", "_id name slug")
+        .populate("postedBy", "_id name username")
+        .select("_id title slug postedBy createdAt updatedAt");
+
+      req.blogsByUser = blogs;
       next();
     }
   } catch (error) {
@@ -248,4 +273,8 @@ exports.listSearch = async (req, res, next) => {
     console.log(error);
     next(error);
   }
+};
+
+exports.listByUser = (req, res) => {
+  return res.json(req.blogsByUser);
 };

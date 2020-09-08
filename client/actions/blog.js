@@ -1,8 +1,17 @@
 import queryString from "query-string";
 import { API } from "../config";
+import { isAuth } from "./auth";
 
 export const create = (blog, token) => {
-  return fetch(`${API}/api/blog`, {
+  let endpoint;
+
+  if (isAuth() && isAuth().role === 1) {
+    endpoint = `${API}/api/blog`;
+  } else if (isAuth() && isAuth().role === 0) {
+    endpoint = `${API}/api/user/blog`;
+  }
+
+  return fetch(`${endpoint}`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -60,8 +69,12 @@ export const listRelated = (blog) => {
     .catch((error) => console.log(error));
 };
 
-export const list = () => {
-  return fetch(`${API}/api/blogs/`, {
+export const list = (username) => {
+  const endpoint = username
+    ? `${API}/api/${username}/blogs`
+    : `${API}/api/blogs`;
+
+  return fetch(`${endpoint}`, {
     method: "GET",
   })
     .then((response) => {
@@ -71,7 +84,15 @@ export const list = () => {
 };
 
 export const remove = (slug, token) => {
-  return fetch(`${API}/api/blog/${slug}`, {
+  let endpoint;
+
+  if (isAuth() && isAuth().role === 1) {
+    endpoint = `${API}/api/blog/${slug}`;
+  } else if (isAuth() && isAuth().role === 0) {
+    endpoint = `${API}/api/user/blog/${slug}`;
+  }
+
+  return fetch(`${endpoint}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
@@ -86,9 +107,15 @@ export const remove = (slug, token) => {
 };
 
 export const update = (blog, token, slug) => {
-  console.log("update slug", slug);
+  let endpoint;
 
-  return fetch(`${API}/api/blog/${slug}`, {
+  if (isAuth() && isAuth().role === 1) {
+    endpoint = `${API}/api/blog/${slug}`;
+  } else if (isAuth() && isAuth().role === 0) {
+    endpoint = `${API}/api/user/blog/${slug}`;
+  }
+
+  return fetch(`${endpoint}`, {
     method: "PUT",
     headers: {
       Accept: "application/json",

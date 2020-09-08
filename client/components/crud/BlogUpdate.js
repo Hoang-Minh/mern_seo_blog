@@ -20,13 +20,14 @@ const BlogUpdate = ({ router }) => {
     formData: "",
     title: "",
     body: "",
+    imgSrc: "",
   });
   const [categories, setCategories] = useState([]); // load all categories options
   const [tags, setTags] = useState([]); // load all tags options
   const [checked, setChecked] = useState([]); // set category
   const [checkedTag, setCheckedTag] = useState([]); // set tag
   const { slug } = router.query;
-  const { error, success, formData, title } = values;
+  const { error, success, formData, title, imgSrc } = values;
   const token = getCookie("token");
 
   useEffect(() => {
@@ -162,13 +163,19 @@ const BlogUpdate = ({ router }) => {
     );
   };
 
+  //src={`${API}/api/blog/photo/${router.query.slug}`}
+
   const initBlog = () => {
     if (slug) {
       singleBlog(slug).then((data) => {
         if (data.error) {
           console.log(data.error);
         } else {
-          setValues({ ...values, title: data.title });
+          setValues({
+            ...values,
+            title: data.title,
+            imgSrc: `${API}/api/blog/photo/${router.query.slug}`,
+          });
           setBody(data.body);
           setCategoriesArray(data.categories);
           setTagsArray(data.tags);
@@ -292,13 +299,7 @@ const BlogUpdate = ({ router }) => {
             {showError()}
             {showSuccess()}
           </div>
-          {body && (
-            <img
-              src={`${API}/api/blog/photo/${router.query.slug}`}
-              alt={title}
-              style={{ width: "100%" }}
-            />
-          )}
+          {body && <img src={imgSrc} alt={title} style={{ width: "100%" }} />}
         </div>
         <div className="col-md-4">
           <div>
@@ -306,15 +307,17 @@ const BlogUpdate = ({ router }) => {
               <h5>Featured Image</h5>
               <hr />
               <small className="text-muted">Max size: 1Mb</small>
-              <label className="btn btn-outline-info">
-                Upload featured image
-                <input
-                  onChange={handleChange("photo")}
-                  type="file"
-                  accept="image/*"
-                  hidden
-                ></input>
-              </label>
+              <div className="mt-3">
+                <label className="btn btn-outline-info">
+                  Upload featured image
+                  <input
+                    onChange={handleChange("photo")}
+                    type="file"
+                    accept="image/*"
+                    hidden
+                  ></input>
+                </label>
+              </div>
             </div>
           </div>
           <h5>Categories</h5>

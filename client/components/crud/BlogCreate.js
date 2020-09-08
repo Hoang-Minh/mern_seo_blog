@@ -259,15 +259,17 @@ const BlogCreate = ({ router }) => {
               <h5>Featured Image</h5>
               <hr />
               <small className="text-muted">Max size: 1Mb</small>
-              <label className="btn btn-outline-info">
-                Upload featured image
-                <input
-                  onChange={handleChange("photo")}
-                  type="file"
-                  accept="image/*"
-                  hidden
-                ></input>
-              </label>
+              <div className="mt-3">
+                <label className="btn btn-outline-info">
+                  Upload featured image
+                  <input
+                    onChange={handleChange("photo")}
+                    type="file"
+                    accept="image/*"
+                    hidden
+                  ></input>
+                </label>
+              </div>
             </div>
           </div>
           <h5>Categories</h5>

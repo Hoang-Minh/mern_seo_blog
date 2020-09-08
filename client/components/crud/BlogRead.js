@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import Router from "next/router";
 import Link from "next/link";
 import { getCookie, isAuth } from "../../actions/auth";
 import { list, remove } from "../../actions/blog";
 import moment from "moment";
 
-const BlogRead = () => {
+const BlogRead = ({ username }) => {
   const [blogs, setBlogs] = useState([]);
   const [message, setMessage] = useState("");
   const token = getCookie("token");
@@ -15,7 +14,7 @@ const BlogRead = () => {
   }, []);
 
   const loadBlogs = () => {
-    list().then((data) => {
+    list(username).then((data) => {
       if (data.error) {
         console.log(data.error);
       } else {
@@ -27,7 +26,7 @@ const BlogRead = () => {
   const deleteBlog = (slug) => {
     remove(slug, token).then((data) => {
       if (data.error) {
-        console.loe(data.error);
+        console.log(data.error);
       } else {
         setMessage(data.message);
         loadBlogs();
@@ -46,20 +45,16 @@ const BlogRead = () => {
   };
 
   const showUpdateButton = (blog) => {
-    // regular user
-    if (isAuth() && isAuth().role === 0) {
-      return (
-        <Link href={`/user/crud/${blog.slug}`}>
-          <a className="btn btn-sm btn-warning">Update</a>
-        </Link>
-      );
-    } else if (isAuth() && isAuth().role === 1) {
-      return (
-        <Link href={`/admin/crud/${blog.slug}`}>
-          <a className="btn btn-sm btn-warning ml-2">Update</a>
-        </Link>
-      );
-    }
+    const endpoint =
+      isAuth().role === 1
+        ? `/admin/crud/${blog.slug}`
+        : `/user/crud/${blog.slug}`;
+
+    return (
+      <Link href={endpoint}>
+        <a className="btn btn-sm btn-warning">Update</a>
+      </Link>
+    );
   };
 
   const showAllBlogs = () => {
@@ -72,7 +67,7 @@ const BlogRead = () => {
             {moment(blog.updatedAt).fromNow()}{" "}
           </p>
           <button
-            className="btn btn-sm btn-danger"
+            className="btn btn-sm btn-danger mr-2"
             onClick={() => deleteConfirm(blog.slug)}
           >
             Delete
