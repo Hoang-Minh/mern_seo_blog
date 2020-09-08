@@ -8,5 +8,6 @@ module.exports = withCSS({
     DOMAIN_DEVELOPMENT: "http://localhost:3000",
     DOMAN_PRODUCTION: "",
     FB_APP_ID: "326626271786396",
+    DISQUS_SHORTNAME: "blog-j4kipqrcet",
   },
 });
