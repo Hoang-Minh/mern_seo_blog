@@ -71,6 +71,7 @@ exports.authMiddleware = async (req, res, next) => {
 };
 
 exports.adminMiddleware = async (req, res, next) => {
+  console.log("admin middleware");
   try {
     const adminUserId = req.auth._id;
     const user = await User.findById(adminUserId);

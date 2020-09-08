@@ -4,6 +4,7 @@ const slugify = require("slugify");
 const { uniqueMessage } = require("../helpers/dbError");
 
 exports.create = async (req, res) => {
+  console.log("create category");
   try {
     const { name } = req.body;
     const slug = slugify(name).toLowerCase();

@@ -18,11 +18,18 @@ const Tag = () => {
   const token = getCookie("token");
 
   useEffect(() => {
-    loadTags();
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    loadTags(signal);
+
+    return () => {
+      abortController.abort();
+    };
   }, [reload]);
 
-  const loadTags = () => {
-    getTags().then((data) => {
+  const loadTags = (signal) => {
+    getTags(signal).then((data) => {
       if (data.error) {
         console.log(data.error);
       } else {

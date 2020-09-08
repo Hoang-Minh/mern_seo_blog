@@ -1,5 +1,6 @@
 import queryString from "query-string";
 import { API } from "../config";
+import { handleResponse } from "./auth";
 
 export const userPublicProfile = (username) => {
   return fetch(`${API}/api/user/${username}`, {
@@ -38,6 +39,7 @@ export const updateProfile = (token, user) => {
     body: user,
   })
     .then((response) => {
+      handleResponse(response);
       return response.json();
     })
     .catch((err) => console.log(err));

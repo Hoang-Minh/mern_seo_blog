@@ -23,10 +23,19 @@ const notFound = (req, res, next) => {
 // };
 
 const errorHandler = (error, req, res, next) => {
+  // Handle expired token
+  if (error.name === "UnauthorizedError") {
+    res.status(401);
+    return res.json({
+      error: error.message,
+      stack: process.env.NODE_ENV === "production" ? "🤢" : error.stack,
+    });
+  }
+
   // some other routes has an error and we make it here
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
-  console.log("errorHandler", error);
+
   res.json({
     error: error.error,
     stack: process.env.NODE_ENV === "production" ? "🤢" : error.stack,

@@ -1,4 +1,5 @@
 import { API } from "../config";
+import { handleResponse } from "./auth";
 
 export const create = (category, token) => {
   return fetch(`${API}/api/category`, {
@@ -11,14 +12,16 @@ export const create = (category, token) => {
     body: JSON.stringify(category),
   })
     .then((response) => {
+      handleResponse(response);
       return response.json();
     })
     .catch((error) => console.log(error));
 };
 
-export const getCategories = () => {
+export const getCategories = (signal) => {
   return fetch(`${API}/api/categories`, {
     method: "GET",
+    signal,
   })
     .then((response) => {
       return response.json();
@@ -46,6 +49,7 @@ export const removeCategory = (slug, token) => {
     },
   })
     .then((response) => {
+      handleResponse(response);
       return response.json();
     })
     .catch((error) => console.log(error));

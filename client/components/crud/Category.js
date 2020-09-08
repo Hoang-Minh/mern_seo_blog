@@ -18,11 +18,18 @@ const Category = () => {
   const token = getCookie("token");
 
   useEffect(() => {
-    loadCategories();
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    loadCategories(signal);
+
+    return () => {
+      abortController.abort();
+    };
   }, [reload]);
 
-  const loadCategories = () => {
-    getCategories().then((data) => {
+  const loadCategories = (signal) => {
+    getCategories(signal).then((data) => {
       if (data.error) {
         console.log(data.error);
       } else {
@@ -87,6 +94,8 @@ const Category = () => {
   const clickSubmit = (event) => {
     event.preventDefault();
     create({ name }, token).then((data) => {
+      console.log("create category", data);
+
       if (data.error) {
         setValues({ ...values, error: data.error, success: false });
       } else {
@@ -110,7 +119,7 @@ const Category = () => {
 
   const showError = () => {
     if (error) {
-      return <p className="text-error">Category already exists</p>;
+      return <p className="text-error">{error}</p>;
     }
   };
 

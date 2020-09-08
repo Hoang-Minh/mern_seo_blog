@@ -1,5 +1,6 @@
 import { API } from "../config";
 import cookie from "js-cookie";
+import Router from "next/router";
 
 export const signup = (user) => {
   return fetch(`${API}/api/signup`, {
@@ -106,5 +107,20 @@ export const updateUser = (user, next) => {
       localStorage.setItem("user", JSON.stringify(user));
       next();
     }
+  }
+};
+
+export const handleResponse = (response) => {
+  if (response.status === 401) {
+    signout(() => {
+      Router.push({
+        pathname: "/signin",
+        query: {
+          message: "Your session is expired. Please sign in",
+        },
+      });
+    });
+  } else {
+    return;
   }
 };

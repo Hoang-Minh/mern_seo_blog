@@ -1,6 +1,6 @@
 import queryString from "query-string";
 import { API } from "../config";
-import { isAuth } from "./auth";
+import { isAuth, handleResponse } from "./auth";
 
 export const create = (blog, token) => {
   let endpoint;
@@ -20,6 +20,7 @@ export const create = (blog, token) => {
     body: blog,
   })
     .then((response) => {
+      handleResponse(response);
       return response.json();
     })
     .catch((error) => console.log(error));
@@ -101,6 +102,7 @@ export const remove = (slug, token) => {
     },
   })
     .then((response) => {
+      handleResponse(response);
       return response.json();
     })
     .catch((error) => console.log(error));
@@ -124,6 +126,7 @@ export const update = (blog, token, slug) => {
     body: blog,
   })
     .then((response) => {
+      handleResponse(response);
       return response.json();
     })
     .catch((error) => console.log(error));
