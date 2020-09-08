@@ -54,7 +54,9 @@ const Header = () => {
             </NavLink>
           </Link>
           <Link href="/user/crud/create" passHref>
-            <NavLink>Create Blogs</NavLink>
+            <NavLink className="btn btn-primary text-light">
+              Create Blogs
+            </NavLink>
           </Link>
           <Link href="/blogs" passHref>
             <NavLink>Blogs</NavLink>
