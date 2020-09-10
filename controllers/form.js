@@ -1,13 +1,12 @@
-const sgMail = require("@sendgrid/mail");
+const { sendMail } = require("../helpers/mail");
 const keys = require("../config/keys");
-sgMail.setApiKey(keys.SENDGRID_API_KEY);
 
-exports.contactForm = async (req, res) => {
+exports.contactForm = (req, res) => {
   const { email, name, message } = req.body;
 
   const msg = {
-    to: req.body.email,
-    from: keys.FROM_EMAIL, // Use the email address or domain you verified above
+    to: keys.ADMIN_EMAIL,
+    from: req.body.email,
     subject: `Contact From - ${keys.APP_NAME}`,
     text: `Email received from contact from \n Sender name: ${name}\n Sender email: ${email}\n Sender message: ${message}`,
     html: `
@@ -20,27 +19,19 @@ exports.contactForm = async (req, res) => {
     `,
   };
 
-  try {
-    await sgMail.send(msg);
-    res.json({ success: true });
-  } catch (error) {
-    console.log(error);
-
-    if (error.response) {
-      console.error(error.response.body);
-    }
-  }
+  sendMail(msg);
+  res.json({ success: true });
 };
 
 // check this !!!
 exports.contactBlogAuthorForm = async (req, res) => {
   const { authorEmail, email, name, message } = req.body;
 
-  const mailList = [authorEmail];
+  const mailList = [authorEmail, keys.ADMIN_EMAIL];
 
   const msg = {
     to: mailList,
-    from: email, // Use the email address or domain you verified above
+    from: email,
     subject: `Someone messaged you from - ${keys.APP_NAME}`,
     text: `Email received from contact from \n Sender name: ${name}\n Sender email: ${email}\n Sender message: ${message}`,
     html: `
@@ -53,14 +44,6 @@ exports.contactBlogAuthorForm = async (req, res) => {
       `,
   };
 
-  try {
-    await sgMail.send(msg);
-    res.json({ success: true });
-  } catch (error) {
-    console.log(error);
-
-    if (error.response) {
-      console.error(error.response.body);
-    }
-  }
+  sendMail(msg);
+  res.json({ success: true });
 };
