@@ -43,6 +43,9 @@ const Header = () => {
           <Link href="/blogs" passHref>
             <NavLink>Blogs</NavLink>
           </Link>
+          <Link href="/contact" passHref>
+            <NavLink>Contact Form</NavLink>
+          </Link>
         </Nav>
       );
     } else {
@@ -61,11 +64,12 @@ const Header = () => {
           <Link href="/blogs" passHref>
             <NavLink>Blogs</NavLink>
           </Link>
-          <NavItem>
-            <Link href={isAuth().role === 1 ? "/admin" : "/user"} passHref>
-              <NavLink>Dashboard</NavLink>
-            </Link>
-          </NavItem>
+          <Link href={isAuth().role === 1 ? "/admin" : "/user"} passHref>
+            <NavLink>Dashboard</NavLink>
+          </Link>
+          <Link href="/contact" passHref>
+            <NavLink>Contact Form</NavLink>
+          </Link>
         </Nav>
       );
     }
