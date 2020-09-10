@@ -13,6 +13,7 @@ const {
 router.post(
   "/category",
   categoryValidator,
+  result,
   requireSignin,
   adminMiddleware,
   create

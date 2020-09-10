@@ -1,5 +1,4 @@
 const { validationResult, check } = require("express-validator");
-const { rest } = require("lodash");
 
 const signupValidator = [
   check("name").trim().not().isEmpty().withMessage("Name is required"),
@@ -21,11 +20,18 @@ const tagValidator = [
   check("name").trim().not().isEmpty().withMessage("Name is required"),
 ];
 
+const contactFormValidator = [
+  check("name").trim().not().isEmpty().withMessage("Name is required"),
+  check("email").isEmail().withMessage("Email is invalid"),
+  check("message")
+    .trim()
+    .isLength({ min: 6 })
+    .withMessage("Message must be at least 20 characters"),
+];
+
 const result = (req, res, next) => {
   const result = validationResult(req);
   const hasError = !result.isEmpty();
-
-  console.log("result", hasError);
 
   if (hasError) {
     const error = result.array()[0].msg;
@@ -40,5 +46,6 @@ module.exports = {
   signupValidator,
   categoryValidator,
   tagValidator,
+  contactFormValidator,
   result,
 };

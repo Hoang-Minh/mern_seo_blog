@@ -4,42 +4,27 @@ const notFound = (req, res, next) => {
   next(error);
 };
 
-// const uniqueMessage = (error, req, res, next) => {
-//   let output;
-//   try {
-//     let fieldName = error.message.substring(
-//       error.message.lastIndexOf(".$") + 2,
-//       error.message.lastIndexOf("_1")
-//     );
-//     output =
-//       fieldName.charAt(0).toUpperCase() +
-//       fieldName.slice(1) +
-//       " already exists";
-//   } catch (ex) {
-//     output = "Unique field already exists";
-//   }
-
-//   return output;
-// };
-
 const errorHandler = (error, req, res, next) => {
-  // Handle expired token
-  if (error.name === "UnauthorizedError") {
+  if (typeof error === "string") {
+    // handle express-validator error
+    res.json({ error });
+  } else if (error.name === "UnauthorizedError") {
+    // handle token expire error
     res.status(401);
     return res.json({
       error: error.message,
       stack: process.env.NODE_ENV === "production" ? "🤢" : error.stack,
     });
+  } else {
+    // some other routes has an error and we make it here
+    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    res.status(statusCode);
+
+    res.json({
+      error: error,
+      stack: process.env.NODE_ENV === "production" ? "🤢" : error.stack,
+    });
   }
-
-  // some other routes has an error and we make it here
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode);
-
-  res.json({
-    error: error.error,
-    stack: process.env.NODE_ENV === "production" ? "🤢" : error.stack,
-  });
 };
 
 // For now, jsut comment this out. Need to figure out a way to handle error from database

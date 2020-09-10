@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
 const tagRoutes = require("./routes/tag");
+const formRoutes = require("./routes/form");
 const PORT = process.env.PORT || 5000;
 
 app.use(morgan("dev"));
@@ -30,6 +31,7 @@ app.use("/api", blogRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", tagRoutes);
+app.use("/api", formRoutes);
 
 if (process.env.NODE_ENV === "production") {
   // Express will serve up production assets
