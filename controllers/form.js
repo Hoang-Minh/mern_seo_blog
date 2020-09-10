@@ -36,12 +36,12 @@ exports.contactForm = async (req, res) => {
 exports.contactBlogAuthorForm = async (req, res) => {
   const { authorEmail, email, name, message } = req.body;
 
-  const mailList = [authorEmail, keys.FROM_EMAIL];
+  const mailList = [authorEmail];
 
   const msg = {
     to: mailList,
     from: email, // Use the email address or domain you verified above
-    subject: `Contact From - ${keys.APP_NAME}`,
+    subject: `Someone messaged you from - ${keys.APP_NAME}`,
     text: `Email received from contact from \n Sender name: ${name}\n Sender email: ${email}\n Sender message: ${message}`,
     html: `
       <h4>Message received from</h4>

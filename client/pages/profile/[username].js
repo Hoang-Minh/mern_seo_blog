@@ -1,10 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import { withRouter } from "next/router";
-import renderHTML from "react-render-html";
 import moment from "moment";
 import Layout from "../../components/Layout";
-import { useState, useEffect } from "react";
+import ContactForm from "../../components/form/ContactForm";
 import { userPublicProfile } from "../../actions/user";
 import { API, DOMAIN, APP_NAME, FB_APP_ID } from "../../config";
 
@@ -104,7 +102,7 @@ const UserProfile = ({ user, blogs, query }) => {
                     Message
                   </h5>
                   <br />
-                  <p>Contact form</p>
+                  <ContactForm authorEmail={user.email}></ContactForm>
                 </div>
               </div>
             </div>
@@ -115,7 +113,7 @@ const UserProfile = ({ user, blogs, query }) => {
   );
 };
 
-// because we name our file [username].js so query.username will return whatevr username value is
+// because we name our file [username].js so query.username will return whatever username value is
 UserProfile.getInitialProps = ({ query }) => {
   return userPublicProfile(query.username).then((data) => {
     if (data.error) {
