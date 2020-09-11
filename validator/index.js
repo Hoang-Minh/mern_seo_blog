@@ -29,6 +29,20 @@ const contactFormValidator = [
     .withMessage("Message must be at least 20 characters"),
 ];
 
+const forgotPasswordValidator = [
+  check("email").isEmail().withMessage("Email is invalid"),
+];
+
+const resetPasswordValidator = [
+  check("password")
+    .exists()
+    .withMessage("Password should not be empty")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters")
+    .matches(/\d/)
+    .withMessage("Password must have at least one number"),
+];
+
 const result = (req, res, next) => {
   const result = validationResult(req);
   const hasError = !result.isEmpty();
@@ -47,5 +61,7 @@ module.exports = {
   categoryValidator,
   tagValidator,
   contactFormValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
   result,
 };

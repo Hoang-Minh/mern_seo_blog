@@ -4,6 +4,7 @@ const shortId = require("shortid");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
 const keys = require("../config/keys");
+const { sendMail } = require("../helpers/mail");
 
 exports.signup = async (req, res) => {
   console.log("controller signup", req.body.email);
@@ -111,3 +112,40 @@ exports.canUpdateDeleteBlog = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res.status(400).json({ error: "User with email does not exist" });
+
+    const token = jwt.sign({ _id: user._id }, keys.JWT_SECRET, {
+      expiresIn: "10m",
+    });
+
+    const msg = {
+      to: email,
+      from: keys.ADMIN_EMAIL,
+      subject: `Reset Password Link - ${keys.APP_NAME}`,
+      html: `
+      <h4>Please use the following link to reset your password:</h4>
+      <p>${keys.CLIENT_URL}/auth/password/reset/${token}</p>      
+      <hr />
+      <p>This email may contain sensitive information</p>
+      `,
+    };
+
+    await user.updateOne({ resetPasswordLink: token });
+    sendMail(msg);
+
+    res.json({
+      message: `Email has been sent to ${email}. Follow the instructions to reset your password`,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.resetPassword = (req, res) => {};
