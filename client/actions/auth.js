@@ -124,3 +124,33 @@ export const handleResponse = (response) => {
     return;
   }
 };
+
+export const forgotPassword = (email) => {
+  return fetch(`${API}/api/forgot-password`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(email),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((error) => console.log(error));
+};
+
+export const resetPassword = (resetInfo) => {
+  return fetch(`${API}/api/reset-password`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(resetInfo),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((error) => console.log(error));
+};

@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect } from "react";
 import { signin, authenticate, isAuth } from "../../actions/auth";
 import Router from "next/router";
+import Link from "next/link";
 
 function SigninComponent({ test }) {
   const [values, setValues] = useState({
@@ -73,7 +74,7 @@ function SigninComponent({ test }) {
           ></input>
         </div>
         <div>
-          <button className="btn btn-primary">Sign In</button>
+          <button className="btn btn-primary mb-3">Sign In</button>
         </div>
       </form>
     );
@@ -85,6 +86,9 @@ function SigninComponent({ test }) {
       {showLoading()}
       {showMessage()}
       {showForm && signinForm()}
+      <Link href="/auth/password/forgot" passHref>
+        <a className="btn btn-outline-danger btn-sm">Reset Password</a>
+      </Link>
     </Fragment>
   );
 }
