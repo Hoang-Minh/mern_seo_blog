@@ -34,7 +34,7 @@ const forgotPasswordValidator = [
 ];
 
 const resetPasswordValidator = [
-  check("password")
+  check("newPassword")
     .exists()
     .withMessage("Password should not be empty")
     .isLength({ min: 6 })

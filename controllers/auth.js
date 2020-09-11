@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Blog = require("../models/blog");
+const _ = require("lodash");
 const shortId = require("shortid");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
@@ -148,4 +149,37 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-exports.resetPassword = (req, res) => {};
+exports.resetPassword = (req, res) => {
+  const { resetPasswordLink, newPassword } = req.body;
+
+  if (resetPasswordLink) {
+    jwt.verify(resetPasswordLink, keys.JWT_SECRET, async function (
+      error,
+      decoded
+    ) {
+      if (error)
+        return res.status(401).json({ error: "Expired link. Try again" });
+
+      try {
+        const user = await User.findOne({ resetPasswordLink });
+
+        if (!user)
+          return res
+            .status(401)
+            .json({ error: "Something went wrong. Try again" });
+
+        const updatedFields = {
+          password: newPassword,
+          resetPasswordLink: "",
+        };
+
+        const updatedUser = _.extend(user, updatedFields);
+        await updatedUser.save();
+
+        res.json({ message: "Password has been reset." });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }
+};
