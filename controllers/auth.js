@@ -7,6 +7,41 @@ const expressJwt = require("express-jwt");
 const keys = require("../config/keys");
 const { sendMail } = require("../helpers/mail");
 
+exports.preSignup = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (user) return res.status(400).json({ error: "Email is taken" });
+    const token = jwt.sign(
+      { name, email, password },
+      keys.JWT_ACCOUNT_ACTIVATION,
+      {
+        expiresIn: "10m",
+      }
+    );
+
+    const msg = {
+      to: email,
+      from: keys.ADMIN_EMAIL,
+      subject: `Account Activation Link`,
+      html: `
+      <h4>Please use the following link to activate your account:</h4>
+      <p>${keys.CLIENT_URL}/auth/account/activate/${token}</p>      
+      <hr />
+      <p>This email may contain sensitive information</p>
+      `,
+    };
+
+    await sendMail(msg);
+    res.json({
+      message: `Email has been sent to ${email}. Follow the instructions to activate your account`,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.signup = async (req, res) => {
   console.log("controller signup", req.body.email);
   try {
@@ -139,7 +174,7 @@ exports.forgotPassword = async (req, res) => {
     };
 
     await user.updateOne({ resetPasswordLink: token });
-    sendMail(msg);
+    await sendMail(msg);
 
     res.json({
       message: `Email has been sent to ${email}. Follow the instructions to reset your password`,

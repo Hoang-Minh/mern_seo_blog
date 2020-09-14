@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { signup } from "../../actions/auth";
+import { preSignup, signup } from "../../actions/auth";
 
 function SignupComponent() {
   const [values, setValues] = useState({
@@ -19,7 +19,8 @@ function SignupComponent() {
     // console.table({ name, email, password, error, loading, message, showForm });
     setValues({ ...values, loading: true, error: false });
     const user = { name, email, password };
-    signup(user).then((data) => {
+    console.log("handle submit", user);
+    preSignup(user).then((data) => {
       console.log("sign up from client", data);
       if (data.error) {
         setValues({ ...values, error: data.error });
