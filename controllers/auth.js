@@ -42,26 +42,27 @@ exports.preSignup = async (req, res) => {
   }
 };
 
-exports.signup = async (req, res) => {
-  console.log("controller signup", req.body.email);
-  try {
-    const user = await User.findOne({ email: req.body.email });
+exports.signup = (req, res) => {
+  const { token } = req.body;
 
-    if (user) {
-      console.log("user exist, sending eror");
-      return res.status(400).json({ error: "Email is taken" });
-    }
+  if (token) {
+    jwt.verify(token, keys.JWT_ACCOUNT_ACTIVATION, async (error, decoded) => {
+      if (error)
+        return res.status(401).json({ error: "Expired link. Sign up again" });
 
-    const { name, email, password } = req.body;
-    const username = shortId.generate();
-    console.log("username", username);
+      console.log("decoded", jwt.decoded);
+      try {
+        const { name, email, password } = jwt.decode(token);
+        const username = shortId.generate();
+        const profile = `${keys.CLIENT_URL}/profile/${username}`;
 
-    const profile = `${keys.CLIENT_URL}/profile/${username}`;
-    const newUer = new User({ name, email, password, profile, username });
-    await newUer.save();
-    res.json({ message: "Signup success! Please sign in" });
-  } catch (error) {
-    return res.status(400).json({ error: error });
+        const user = new User({ name, email, password, profile, username });
+        await user.save();
+        res.json({ message: "Signup success! Please sign in" });
+      } catch (error) {
+        console.log(error);
+      }
+    });
   }
 };
 

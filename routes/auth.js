@@ -16,7 +16,7 @@ const {
 } = require("../controllers/auth");
 
 router.post("/pre-signup", signupValidator, result, preSignup);
-router.post("/signup", signupValidator, result, signup);
+router.post("/signup", signup);
 router.post("/signin", signin);
 router.get("/signout", signout);
 router.put("/forgot-password", forgotPasswordValidator, result, forgotPassword);
