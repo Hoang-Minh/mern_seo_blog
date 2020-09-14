@@ -3,6 +3,7 @@ const Blog = require("../models/blog");
 const _ = require("lodash");
 const shortId = require("shortid");
 const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require("google-auth-library");
 const expressJwt = require("express-jwt");
 const keys = require("../config/keys");
 const { sendMail } = require("../helpers/mail");
@@ -217,5 +218,44 @@ exports.resetPassword = (req, res) => {
         console.log(error);
       }
     });
+  }
+};
+
+const client = new OAuth2Client(keys.GOOGLE_CLIENT_ID);
+exports.googleLogin = async (req, res) => {
+  try {
+    const idToken = req.body.tokenId;
+    const response = await client.verifyIdToken({
+      idToken,
+      audience: keys.GOOGLE_CLIENT_ID,
+    });
+
+    const { email_verified, name, email, jti } = response.payload;
+
+    if (email_verified) {
+      let userInDb = await User.findOne({ email });
+
+      if (!userInDb) {
+        const username = shortId.generate();
+        const profile = `${keys.CLIENT_URL}/profile/${username}`;
+        const password = jti + keys.JWT_SECRET;
+
+        // create new user
+        userInDb = new User({ name, email, password, profile, username });
+        await userInDb.save();
+      }
+
+      const token = jwt.sign({ _id: userInDb._id }, keys.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+
+      res.cookie("token", token, { expiresIn: "1d" });
+      const { _id, email, name, role, username } = userInDb;
+      res.json({ token, user: { _id, email, name, role, username } });
+    } else {
+      return res.status(400).json({ error: "Google login failed. Try again" });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
