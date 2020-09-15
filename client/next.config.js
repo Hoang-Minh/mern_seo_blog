@@ -3,9 +3,9 @@ const withCSS = require("@zeit/next-css");
 module.exports = withCSS({
   publicRuntimeConfig: {
     APP_NAME: "SEOBLOG",
-    API_DEVELOPMENT: "https://secure-hamlet-36410.herokuapp.com:5000/api",
+    API_DEVELOPMENT: "https://secure-hamlet-36410.herokuapp.com/api",
     PRODUCTION: true,
-    DOMAIN_DEVELOPMENT: "https://secure-hamlet-36410.herokuapp.com:3000",
+    DOMAIN_DEVELOPMENT: "https://secure-hamlet-36410.herokuapp.com",
     DOMAN_PRODUCTION: "",
     FB_APP_ID: "326626271786396",
     DISQUS_SHORTNAME: "blog-j4kipqrcet",
