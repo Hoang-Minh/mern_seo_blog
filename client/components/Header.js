@@ -57,6 +57,7 @@ const Header = () => {
             </NavLink>
           </Link>
           <Link href="/user/crud/create" passHref>
+            {/* Use anchor tag instead so react quill will load properly ??? */}
             <NavLink className="btn btn-primary text-light">
               Create Blogs
             </NavLink>

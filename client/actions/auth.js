@@ -169,3 +169,18 @@ export const resetPassword = (resetInfo) => {
     })
     .catch((error) => console.log(error));
 };
+
+export const loginWithGoogle = (user) => {
+  return fetch(`${API}/api/google-login`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((error) => console.log(error));
+};

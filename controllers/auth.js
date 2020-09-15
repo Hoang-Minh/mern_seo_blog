@@ -229,10 +229,10 @@ exports.googleLogin = async (req, res) => {
       idToken,
       audience: keys.GOOGLE_CLIENT_ID,
     });
-
-    const { email_verified, name, email, jti } = response.payload;
+    const { email_verified } = response.payload;
 
     if (email_verified) {
+      const { name, email, jti } = response.payload;
       let userInDb = await User.findOne({ email });
 
       if (!userInDb) {
@@ -250,7 +250,8 @@ exports.googleLogin = async (req, res) => {
       });
 
       res.cookie("token", token, { expiresIn: "1d" });
-      const { _id, email, name, role, username } = userInDb;
+
+      const { _id, role, username } = userInDb;
       res.json({ token, user: { _id, email, name, role, username } });
     } else {
       return res.status(400).json({ error: "Google login failed. Try again" });
