@@ -36,7 +36,7 @@ app.use("/api", formRoutes);
 if (process.env.NODE_ENV === "production") {
   // Express will serve up production assets
   // like our main.js file or main.css file
-  app.use(express.static("client/.next/server/pages"));
+  app.use(express.static("client/.next/server"));
 
   // Express will serve up the index.html file if it doesn't recognize the route
   const path = require("path");
